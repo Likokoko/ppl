@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-
+import UserCard from "./userCard"
 const RandomUser = () => {
   const [users, setUsers] = useState([]);
+  const [hoveredUser, setHoveredUser] = useState(null);
 
   useEffect(() => {
     fetch("https://randomuser.me/api/?results=10")
@@ -23,16 +24,21 @@ const RandomUser = () => {
   }
 
   return (
-    <article className='person'>
+    <article className="person">
       {users.length > 0 ? (
         <div>
           {users.map((user) => (
-            <div className="user" key={user.login.uuid}>
+            <div
+              className="user"
+              key={user.login.uuid}
+              onMouseEnter={() => setHoveredUser(user)}
+              onMouseLeave={() => setHoveredUser(null)}
+            >
               <img src={user.picture.large} alt={user.name.first} />
-              <h2>
+              {hoveredUser === user && <UserCard user={user} />}
+              <h3>
                 {user.name.first} {user.name.last}
-              </h2>
-              <p className="email">{user.email}</p>
+              </h3>
               <p className="birthday">Birthday: {formatDate(user.dob.date)}</p>
             </div>
           ))}
